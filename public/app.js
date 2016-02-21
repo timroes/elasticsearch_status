@@ -1,39 +1,35 @@
-import moment from 'moment';
-import chrome from 'ui/chrome';
 import uiModules from 'ui/modules';
 import uiRoutes from 'ui/routes';
 
 import 'ui/autoload/styles';
 import './less/main.less';
-import template from './templates/index.html';
-
-chrome
-  .setNavBackground('#222222')
-  .setTabs([]);
+import overviewTemplate from './templates/index.html';
+import detailTemplate from './templates/detail.html';
 
 uiRoutes.enable();
 uiRoutes
 .when('/', {
-  template,
-  resolve: {
-    currentTime($http) {
-      return $http.get('../api/elasticsearch_status/example').then(function (resp) {
-        return resp.data.time;
-      });
-    }
-  }
+  template: overviewTemplate,
+  controller: 'elasticsearchStatusController',
+  controllerAs: 'ctrl'
+})
+.when('/index/:name', {
+  template: detailTemplate,
+  controller: 'elasticsearchDetailController',
+  controllerAs: 'ctrl'
 });
 
 uiModules
-.get('app/elasticsearch_status', [])
-.controller('elasticsearchStatusHelloWorld', function ($scope, $route, $interval) {
-  $scope.title = 'Elasticsearch Status';
-  $scope.description = 'An awesome Kibana plugin';
+.get('app/elasticsearch_status')
+.controller('elasticsearchStatusController', function ($http) {
+  $http.get('../api/elasticsearch_status/indices').then((response) => {
+    this.indices = response.data;
+  });
+})
+.controller('elasticsearchDetailController', function($routeParams, $http) {
+  this.index = $routeParams.name;
 
-  var currentTime = moment($route.current.locals.currentTime);
-  $scope.currentTime = currentTime.format('HH:mm:ss');
-  var unsubscribe = $interval(function () {
-    $scope.currentTime = currentTime.add(1, 'second').format('HH:mm:ss');
-  }, 1000);
-  $scope.$watch('$destroy', unsubscribe);
+  $http.get(`../api/elasticsearch_status/index/${this.index}`).then((response) => {
+    this.status = response.data;
+  });
 });

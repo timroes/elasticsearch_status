@@ -1,13 +1,12 @@
-<div class="container" ng-controller="elasticsearchStatusHelloWorld">
+<div class="container">
   <div class="row">
     <div class="col-12-sm">
-      <div class="well">
-        <h2>Congratulations</h2>
-        <p class="lead">You've successfully created your first Kibana Plugin!</p>
-      </div>
-      <h1>{{ title }}</h1>
-      <p class="lead">{{ description }}</p>
-      <p>The current time is {{ currentTime }}</p>
+      <h1>Elasticsearch Status</h1>
+      <ul class="indexList">
+        <li ng-repeat="index in ctrl.indices">
+          <a href="#/index/{{index}}">{{ index }}</a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
