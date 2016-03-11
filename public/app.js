@@ -1,11 +1,7 @@
 import uiModules from 'ui/modules';
 import uiRoutes from 'ui/routes';
 
-try {
-  import 'ui/autoload/styles';
-} catch(e) {
-  // Ignore exception, Kibana 4 does not have this file
-}
+import 'ui/autoload/styles';
 import './less/main.less';
 import overviewTemplate from './templates/index.html';
 import detailTemplate from './templates/detail.html';
